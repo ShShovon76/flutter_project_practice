@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
       ),
 
-      home: PracticeImages(),
+      home: Practice9(),
     );
   }
 }
@@ -269,6 +269,80 @@ class PracticeImages extends StatelessWidget {
                   width: 400,
                   fit: BoxFit.cover,
                 ),
+        ),
+      ),
+    );
+  }
+}
+
+class PracticeImages2 extends StatelessWidget {
+  final bool loadFromNetwork;
+  const PracticeImages2({super.key, this.loadFromNetwork = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: MyAppBar(title: "Images"),
+      body: Container(
+        constraints: const BoxConstraints.expand(),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage(
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQn2nmWoa-66Yo5xylQwIiAxtvMrK2pB2l4CA&s",
+            ),
+            fit: BoxFit.cover, // important to fill
+          ),
+        ),
+        child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.all(20),
+              child: CircleAvatar(
+                radius: 100, // half of width/height
+                backgroundImage: AssetImage('assets/man3.jpg'),
+              ),
+            ),
+            Container(
+              child: Image.asset(
+                'assets/man3.jpg',
+                height: 300,
+                width: 400,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Practice9 extends StatelessWidget {
+  const Practice9({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: MyAppBar(title: "Practice 9"),
+      body: Center(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            maximumSize: Size(250, 60), // width, height
+          ),
+          onPressed: () {
+            print("You pressed");
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Click me ",
+                style: TextStyle(color: Colors.blue, fontSize: 24),
+              ),
+              SizedBox(width: 10),
+              Icon(Icons.home, color: Colors.blue, size: 50),
+            ],
+          ),
         ),
       ),
     );
