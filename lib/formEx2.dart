@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp2());
+  runApp(MyApp());
 }
 
-class MyApp2 extends StatelessWidget {
-  const MyApp2({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,41 +19,40 @@ class MyApp2 extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
       ),
-
-      home: LargeFormPage(),
+      title: "Demo Form",
+      home: DemoFormEx(),
     );
   }
 }
 
-class LargeFormPage extends StatefulWidget {
-  const LargeFormPage({super.key});
+class DemoFormEx extends StatefulWidget {
+  const DemoFormEx({super.key});
 
   @override
-  State<LargeFormPage> createState() => _LargeFormPageState();
+  State<DemoFormEx> createState() => _DemoFormExState();
 }
 
-class _LargeFormPageState extends State<LargeFormPage> {
-  final _formKey = GlobalKey<FormState>();
+class _DemoFormExState extends State<DemoFormEx> {
+  final _fromKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
-
   String? _name;
   String? _email;
   String? _password;
+  String? _age;
   String? _gender;
-  bool _subscribe = false;
   String? _country;
-  bool _switchValue = false;
   DateTime? _dob;
-
+  bool _switchValue = false;
   List<String> countries = ['Bangladesh', 'India', 'USA', 'UK'];
 
   Future<void> _pickDate() async {
     DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime(2026),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1960),
+      lastDate: DateTime(2026),
     );
+
     if (picked != null) {
       setState(() {
         _dob = picked;
@@ -61,57 +60,36 @@ class _LargeFormPageState extends State<LargeFormPage> {
     }
   }
 
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-
-      debugPrint("----- FORM DATA -----");
-      debugPrint("Name: $_name");
-      debugPrint("Email: $_email");
-      debugPrint("Password: $_password");
-      debugPrint("Gender: $_gender");
-      debugPrint("Subscribed: $_subscribe");
-      debugPrint("Country: $_country");
-      debugPrint("Switch Value: $_switchValue");
-      debugPrint(
-        "Date of Birth: ${_dob != null ? _dob!.toIso8601String() : 'Not selected'}",
-      );
-      debugPrint("---------------------");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Form Example')),
+      appBar: AppBar(title: const Text("User Form")),
       body: Padding(
         padding: EdgeInsets.all(16),
         child: Form(
-          key: _formKey,
+          key: _fromKey,
           child: Column(
             children: [
+              Center(
+                child: SizedBox(
+                  height: 200,
+                  width: 200,
+                  child: CircleAvatar(backgroundColor: Colors.amber),
+                ),
+              ),
+
+              SizedBox(height: 20),
+
               TextFormField(
                 decoration: InputDecoration(
-                  labelText: 'Username',
-                  prefixIcon: const Icon(Icons.account_circle_outlined),
+                  labelText: "Name",
                   hintText: 'Enter your name',
-
-                  // Default border
+                  prefixIcon: Icon(Icons.person),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue, width: 2),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.amber, width: 2),
-                  ),
-
-                  // Border when error
-                  errorBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.red, width: 2),
-                  ),
-
-                  // Border when focused + error
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.redAccent, width: 2),
                   ),
                 ),
                 validator: (value) => value == null || value.isEmpty
@@ -119,37 +97,47 @@ class _LargeFormPageState extends State<LargeFormPage> {
                     : null,
                 onSaved: (value) => _name = value,
               ),
-              SizedBox(height: 8),
 
-              // Email Field
+              SizedBox(height: 16),
+
               TextFormField(
                 decoration: InputDecoration(
-                  labelText: 'Email',
-                  prefixIcon: const Icon(Icons.email),
+                  labelText: "Email",
                   hintText: 'Enter your name',
-
-                  // Default border
+                  prefixIcon: Icon(Icons.mail),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue, width: 2),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.amber, width: 2),
                   ),
-
-                  // Border when error
-                  errorBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.red, width: 2),
-                  ),
                 ),
-                keyboardType: TextInputType.emailAddress,
                 validator: (value) => value == null || value.isEmpty
                     ? 'please enter your email'
                     : null,
                 onSaved: (value) => _email = value,
               ),
-              SizedBox(height: 8),
 
-              // Password Field
+              SizedBox(height: 16),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: "Age",
+                  hintText: 'Enter your Age',
+                  prefixIcon: Icon(Icons.person),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 2),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber, width: 2),
+                  ),
+                ),
+                validator: (value) => value == null || value.isEmpty
+                    ? 'please enter your age'
+                    : null,
+                onSaved: (value) => _age = value,
+              ),
+
+              SizedBox(height: 16),
               TextFormField(
                 decoration: InputDecoration(
                   labelText: 'Password',
@@ -200,11 +188,16 @@ class _LargeFormPageState extends State<LargeFormPage> {
                 onSaved: (value) => _password = value,
               ),
 
+              SizedBox(height: 16),
+
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Gender", style: TextStyle(fontSize: 16)),
-                  const SizedBox(height: 8),
+                  const Text(
+                    "Gender",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  SizedBox(height: 8),
 
                   RadioGroup(
                     groupValue: _gender,
@@ -227,6 +220,7 @@ class _LargeFormPageState extends State<LargeFormPage> {
                       ],
                     ),
                   ),
+
                   SizedBox(height: 16),
 
                   DropdownButtonFormField<String>(
@@ -256,61 +250,6 @@ class _LargeFormPageState extends State<LargeFormPage> {
                         _country = value;
                       });
                     },
-                  ),
-
-                  SizedBox(height: 16),
-
-                  // Check Box
-                  CheckboxListTile(
-                    title: const Text("Subscribe to newsletter"),
-                    value: _subscribe,
-                    onChanged: (value) {
-                      setState(() {
-                        _subscribe = value!;
-                      });
-                    },
-                  ),
-
-                  SizedBox(height: 16),
-
-                  // Enable notification
-                  SwitchListTile(
-                    title: const Text("Enable Notifications"),
-                    value: _switchValue,
-                    onChanged: (value) {
-                      setState(() {
-                        _switchValue = value;
-                      });
-                    },
-                  ),
-
-                  SizedBox(height: 16),
-
-                  // Date picker
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          _dob == null
-                              ? " Select Date of Birth"
-                              : "DOB: ${_dob!.day}/${_dob!.month}/${_dob!.year}",
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: _pickDate,
-                        child: const Text("Pick Date"),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: 16),
-
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _submitForm,
-                      child: Text("Submit"),
-                    ),
                   ),
                 ],
               ),

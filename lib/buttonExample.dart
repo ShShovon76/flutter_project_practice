@@ -22,7 +22,7 @@ class ButtonDemoPage extends StatelessWidget {
   const ButtonDemoPage({super.key});
   void showMessage(String msg) {
     Fluttertoast.showToast(
-      msg: 'This is a toast ${msg}',
+      msg: 'This is a toast $msg',
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       backgroundColor: Colors.blueAccent,
