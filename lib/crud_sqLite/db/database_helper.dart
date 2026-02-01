@@ -44,7 +44,7 @@ class DatabaseHelper {
         address TEXT,
         age INTEGER,
         salary REAL,
-        gender TEXT,
+        gender INTEGER,
         department TEXT,
         dob TEXT,
         createdAt TEXT,
