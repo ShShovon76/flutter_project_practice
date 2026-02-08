@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_first_project/api_call_example/services/auth_service.dart';
 import 'package:my_first_project/api_call_example/ui/product_list.dart';
+import 'package:my_first_project/api_call_example/ui/register_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -10,33 +11,42 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
 
-final TextEditingController usernameCtrl = TextEditingController();
-  final TextEditingController passwordCtrl = TextEditingController();
-  final AuthService authService = AuthService();
+  final usernameCtrl = TextEditingController();
+  final passwordCtrl = TextEditingController();
+  final authService = AuthService();
 
   bool isLoading = false;
 
-  void login() async {
+  Future<void> loginMethod() async {
+    if (!_formKey.currentState!.validate()) return;
+
     setState(() => isLoading = true);
 
-    bool success = await authService.login(
-      usernameCtrl.text,
-      passwordCtrl.text,
-    );
-
-    setState(() => isLoading = false);
-
-    if (success) {
-      // Navigate to ProductListPage after login
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const ProductListPage()),
+    try {
+      final success = await authService.login(
+        usernameCtrl.text.trim(),
+        passwordCtrl.text,
       );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login failed! Check credentials.')),
-      );
+
+      if (!mounted) return;
+
+      if (success) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const ProductListPage()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('❌ Invalid credentials')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
+    } finally {
+      if (mounted) setState(() => isLoading = false);
     }
   }
 
@@ -53,24 +63,65 @@ final TextEditingController usernameCtrl = TextEditingController();
       appBar: AppBar(title: const Text('Login')),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: usernameCtrl,
-              decoration: const InputDecoration(labelText: 'Username'),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: passwordCtrl,
-              decoration: const InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            const SizedBox(height: 20),
-            isLoading
-                ? const CircularProgressIndicator()
-                : ElevatedButton(onPressed: login, child: const Text('Login')),
-            const SizedBox(height: 20),
-          ],
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Welcome Back 👋",
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 24),
+
+              TextFormField(
+                controller: usernameCtrl,
+                decoration: const InputDecoration(
+                  labelText: 'Username',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (v) =>
+                    v == null || v.isEmpty ? "Username required" : null,
+              ),
+              const SizedBox(height: 12),
+
+              TextFormField(
+                controller: passwordCtrl,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                ),
+                obscureText: true,
+                validator: (v) =>
+                    v == null || v.length < 4 ? "Password too short" : null,
+              ),
+              const SizedBox(height: 20),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: isLoading ? null : loginMethod,
+                  child: isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text('LOGIN'),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const RegisterPage(),
+                    ),
+                  );
+                },
+                child: const Text("Don’t have an account? Register"),
+              ),
+            ],
+          ),
         ),
       ),
     );
